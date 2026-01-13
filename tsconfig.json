@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "lib/DB/db.js"  ],
+, "lib/DB/db.js", "lib/auth.ts", "src/DB/index.ts"  ],
   "exclude": ["node_modules"]
 }
