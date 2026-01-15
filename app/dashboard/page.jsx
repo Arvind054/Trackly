@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Plus, Globe, ExternalLink } from "lucide-react";
 import DashboardWebCard from '../../components/DashboardWebCard';
-
+import Link from 'next/link';
 // Dummy data for websites
 const dummyWebsites = [
   { id: 1, name: "My Portfolio", url: "https://myportfolio.com" },
@@ -14,6 +14,7 @@ const dummyWebsites = [
 
 const DashboardPage = () => {
   const [websiteList, setWebsiteList] = useState(dummyWebsites);
+
   // Use empty array to test empty state: useState([]);
 
   return (
@@ -30,12 +31,13 @@ const DashboardPage = () => {
               Manage and monitor all your websites in one place
             </p>
           </div>
+          <Link href={"/dashboard/new"}>
           <Button 
-            className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium"
-          >
+            className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium">
             <Plus className="h-4 w-4" />
             Add Website
           </Button>
+          </Link>
         </div>
 
         {/* Content Section */}
@@ -50,19 +52,20 @@ const DashboardPage = () => {
               <p className="text-neutral-500 mb-6 max-w-sm text-sm">
                 You don't have any website added. Add your first website to start tracking.
               </p>
+              <Link href={"/dashboard/new"}>
               <Button 
-                className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium"
-              >
+                className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium">
                 <Plus className="h-4 w-4" />
                 Add Your First Website
               </Button>
+              </Link>
             </div>
           </div>
         ) : (
           // Website Cards Grid
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {websiteList.map((website) => (
-              <DashboardWebCard website = {website}/>
+              <DashboardWebCard website = {website} key={website.url}/>
             ))}
           </div>
         )}
