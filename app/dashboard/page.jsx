@@ -1,21 +1,89 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Plus, Globe, ExternalLink } from "lucide-react";
+import { Plus, Globe, ExternalLink, Loader2, BarChart3 } from "lucide-react";
 import DashboardWebCard from '../../components/DashboardWebCard';
 import Link from 'next/link';
-// Dummy data for websites
-const dummyWebsites = [
-  { id: 1, name: "My Portfolio", url: "https://myportfolio.com" },
-  { id: 2, name: "E-commerce Store", url: "https://mystore.com" },
-  { id: 3, name: "Blog Website", url: "https://myblog.com" },
-];
-
+import { useSession } from '@/components/session-provider';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 const DashboardPage = () => {
-  const [websiteList, setWebsiteList] = useState(dummyWebsites);
+  const { user, isAuthenticated, isLoading } = useSession();
+  const router = useRouter();
+  const [websiteList, setWebsiteList] = useState([]);
+  const [loading, setLoading] = useState(false);
+   
+   async function getUserWebsites(){
+    if(isLoading)return ;
+    if(!isAuthenticated){
+      router.push("/login");
+       toast.error("Login/Signup to Continue");
+         return ;
+      }
+      setLoading(true);
+      try{
+          const result = await axios.get("/api/website");
+          setWebsiteList(result?.data);
+      }catch(err){
+        toast.error(err.message);
+      }finally{
+        setLoading(false);
+      }
+   }
+useEffect(()=>{
+  getUserWebsites();
+}, [user, isLoading])
 
-  // Use empty array to test empty state: useState([]);
+  // Loading State
+  if (isLoading || loading) {
+    return (
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-6">
+          {/* Animated Logo */}
+          <div className="relative">
+            <div className="absolute inset-0 rounded-2xl bg-emerald-500/20 blur-xl animate-pulse" />
+            <div className="relative grid place-items-center h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25">
+              <BarChart3 className="h-8 w-8 text-white" />
+            </div>
+          </div>
+          
+          {/* Loading Text */}
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex items-center gap-2">
+              <Loader2 className="h-5 w-5 text-emerald-500 animate-spin" />
+              <span className="text-neutral-300 font-medium">Loading your dashboard</span>
+            </div>
+            <p className="text-neutral-500 text-sm">Please wait a moment...</p>
+          </div>
+
+          {/* Skeleton Cards Preview */}
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl px-6">
+            {[1, 2, 3].map((i) => (
+              <div 
+                key={i} 
+                className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5 space-y-4"
+                style={{ animationDelay: `${i * 100}ms` }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-neutral-800 animate-pulse" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-24 bg-neutral-800 rounded animate-pulse" />
+                    <div className="h-3 w-32 bg-neutral-800/60 rounded animate-pulse" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-3 w-full bg-neutral-800/40 rounded animate-pulse" />
+                  <div className="h-3 w-3/4 bg-neutral-800/40 rounded animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-neutral-950">
@@ -65,7 +133,7 @@ const DashboardPage = () => {
           // Website Cards Grid
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {websiteList.map((website) => (
-              <DashboardWebCard website = {website} key={website.url}/>
+              <DashboardWebCard website = {website} key={website.id}/>
             ))}
           </div>
         )}

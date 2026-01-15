@@ -14,12 +14,12 @@ export const auth = betterAuth({
     },
   }),
   
-  baseURL: process.env.BETTER_AUTH_URL || "https://atoms-ai.vercel.app",
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
   secret: process.env.BETTER_AUTH_SECRET,
   trustedOrigins: [
-    "https://atoms-ai.vercel.app",
     "http://localhost:3000",
-  ],
+    process.env.NEXT_PUBLIC_APP_URL || "",
+  ].filter(Boolean),
 
   socialProviders: {
     google: {
@@ -37,7 +37,7 @@ export const auth = betterAuth({
   },
 
   advanced: {
-    cookiePrefix: "atmosai",
+    cookiePrefix: "trackly",
     useSecureCookies: process.env.NODE_ENV === "production",
   },
 });

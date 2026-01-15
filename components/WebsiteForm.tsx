@@ -28,7 +28,8 @@ const WebsiteForm = (props: Props) => {
     setLoading(true);
     try{
         const websiteId = uuidv4();
-        const result = await axios.post('/api/website',{websiteId,domain, timeZone, enabledLocalhostTracking, userEmail:"abc"});
+        const result = await axios.post('/api/website',{websiteId,domain, timeZone, enabledLocalhostTracking});
+        console.log("result is ", result);
         router.push(`/dashboard/website/${result?.data?.id}`);
     }catch(err:any){
         toast.error(err?.response.data.message || "Unknown Error ! Please Retry");
