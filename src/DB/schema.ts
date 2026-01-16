@@ -1,7 +1,8 @@
 import { relations } from "drizzle-orm";
+import { foreignKey } from "drizzle-orm/gel-core";
 import { pgTable, text, timestamp, boolean, index, integer, varchar } from "drizzle-orm/pg-core";
 
-
+// Table to Store the Website data for the user
 export const websiteTable = pgTable("websites",{
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   websiteId: varchar({length:255}).notNull().unique(),
@@ -9,7 +10,36 @@ export const websiteTable = pgTable("websites",{
   timeZone: varchar({length:255}).notNull(),
   enabledLocalhostTracking: boolean().default(false),
   userEmail:varchar({length:255}).notNull(),
-})
+});
+
+// Table to Store the Tracking Details of a website
+export const pageViewsTable = pgTable("pageViews",{
+ id: integer().primaryKey().generatedAlwaysAsIdentity(),
+ visitorId: varchar({length:255}),
+ websiteId: varchar({length:255}).notNull(),
+ domain: varchar({length:255}).notNull(),
+ url:varchar({length:255}),
+ type:varchar({length:50}).notNull(),
+ referrer: varchar({length:2048}),
+entryTime: varchar({length: 100}),
+exitTime: varchar({length:100}),
+totalActiveTime: integer(),
+url_params: varchar({length:255}),
+utm_source: varchar({length:255}),
+utm_medium: varchar({length:255}),
+utm_campaign: varchar({length:255}),
+device:varchar(),
+os:varchar(),
+browser: varchar(),
+city: varchar(),
+region: varchar(),
+country: varchar(),
+countryCode: varchar(),
+ipAddress: varchar(),
+refParams: varchar(),
+});
+
+// User Table
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
