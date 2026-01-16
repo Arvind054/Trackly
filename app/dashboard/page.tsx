@@ -9,32 +9,39 @@ import { useSession } from '@/components/session-provider';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import type { WebsiteInfoType } from "@/lib/types";
 const DashboardPage = () => {
   const { user, isAuthenticated, isLoading } = useSession();
   const router = useRouter();
-  const [websiteList, setWebsiteList] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [websiteList, setWebsiteList] = useState<WebsiteInfoType[]>([]);
+  const [loading, setLoading] = useState(true); // Start as true to show loading initially
    
-   async function getUserWebsites(){
-    if(isLoading)return ;
-    if(!isAuthenticated){
+  useEffect(() => {
+    // Wait for session to finish loading
+    if (isLoading) return;
+    
+    // If not authenticated after session loaded, redirect to login
+    if (!isAuthenticated) {
       router.push("/login");
-       toast.error("Login/Signup to Continue");
-         return ;
-      }
+      toast.error("Login/Signup to Continue");
+      return;
+    }
+    
+    // Fetch websites only when authenticated
+    async function getUserWebsites() {
       setLoading(true);
-      try{
-          const result = await axios.get("/api/website");
-          setWebsiteList(result?.data);
-      }catch(err){
-        toast.error(err.message);
-      }finally{
+      try {
+        const result = await axios.get("/api/website");
+        setWebsiteList(result?.data || []);
+      } catch (err: any) {
+        toast.error(err?.response?.data?.error || err.message);
+      } finally {
         setLoading(false);
       }
-   }
-useEffect(()=>{
-  getUserWebsites();
-}, [user, isLoading])
+    }
+    
+    getUserWebsites();
+  }, [isLoading, isAuthenticated, router]);
 
   // Loading State
   if (isLoading || loading) {
@@ -132,8 +139,8 @@ useEffect(()=>{
         ) : (
           // Website Cards Grid
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {websiteList.map((website) => (
-              <DashboardWebCard website = {website} key={website.id}/>
+            {websiteList.map((website:any, idx) => (
+              <DashboardWebCard websiteInfo = {website} key={idx}/>
             ))}
           </div>
         )}
