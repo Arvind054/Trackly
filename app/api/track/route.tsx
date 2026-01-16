@@ -1,8 +1,10 @@
+import { db } from "@/src/DB";
+import { pageViewsTable } from "@/src/DB/schema";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import {UAParser} from 'ua-parser-js'
 export async function POST(req: NextRequest){
     const body = await req.json();
-    console.log("data is ", body);
     //Device Info
     const parser =new  UAParser(req.headers.get('user-agent')|| '');
     const deviceInfo = parser.getDevice()?.model;
@@ -13,9 +15,38 @@ export async function POST(req: NextRequest){
     const geoRes = await fetch(`http://ip-api.com/json/${ip}`);
     const geoInfo = await geoRes.json();
 
-   
     //Insert to DB
-    console.log(body, deviceInfo, osInfo, browserInfo, geoInfo);
-
-    return NextResponse.json({message:"Data Received"},{status: 200});
+    let result;
+    if(body?.type =='entry'){
+      result = await db.insert(pageViewsTable).values({
+        visitorId: body.visitorId,
+         websiteId: body.websiteId,
+         domain: body.domain,
+         url:body.url || '',
+         type:body.type,
+         referrer: body.referrer,
+        entryTime: body.entryTime,
+        exitTime: body.exitTime,
+        totalActiveTime: body.totalActiveTime,
+        url_params: body.urlParams,
+        utm_source: body.utm_source,
+        utm_medium: body.utm_media,
+        utm_campaign:body.utm_campaign,
+        device:deviceInfo,
+        os:osInfo,
+        browser: browserInfo,
+        city: geoInfo.city,
+        region: geoInfo.region,
+        country: geoInfo.country,
+        ipAddress: ip || '',
+        refParams: body.refParams,
+     }).returning();
+    
+    }else{
+        result = await db.update(pageViewsTable).set({
+            exitTime:body.exitTime,
+            totalActiveTime:body.totalActiveTime,
+        }).where(eq(pageViewsTable.visitorId, body?.visitorId)).returning();
+    }
+     return NextResponse.json({message:"Data Received", data: result},{status: 200});
 }
