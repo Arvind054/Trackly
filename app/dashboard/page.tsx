@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import type { WebsiteInfoType } from "@/lib/types";
+import { format } from 'date-fns';
 const DashboardPage = () => {
   const { user, isAuthenticated, isLoading } = useSession();
   const router = useRouter();
@@ -31,7 +32,8 @@ const DashboardPage = () => {
     async function getUserWebsites() {
       setLoading(true);
       try {
-        const result = await axios.get("/api/website");
+        const today = format(new Date, 'yyy-MM-dd');
+        const result = await axios.get(`/api/website?from=${today}&to=${today}`);
         setWebsiteList(result?.data || []);
       } catch (err: any) {
         toast.error(err?.response?.data?.error || err.message);

@@ -47,6 +47,7 @@ export async function POST(req: NextRequest){
         result = await db.update(pageViewsTable).set({
             exitTime:body.exitTime,
             totalActiveTime:body.totalActiveTime,
+            exitUrl:body?.exitUrl,
         }).where(eq(pageViewsTable.visitorId, body?.visitorId)).returning();
     }
      return NextResponse.json({message:"Data Received", data: result},{status: 200});

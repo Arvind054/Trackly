@@ -262,9 +262,9 @@ export async function GET(req: NextRequest) {
 
             // Hourly Visitors
 
+            /* ---------------- HOURLY VISITORS ---------------- */
             const hourlyMap: Record<string, Set<string>> = {};
             const hourlyVisitors: any[] = [];
-
 
             if (views.length > 0) {
                 const start = fromUnix
@@ -276,6 +276,7 @@ export async function GET(req: NextRequest) {
                     : new Date(Math.max(...views.map((v) => Number(v.entryTime) * 1000)));
 
                 let cursor = new Date(start);
+
                 while (cursor <= end) {
                     const local = toZonedTime(cursor, siteTZ);
                     const date = formatDateInTZ(local, siteTZ);
@@ -296,21 +297,20 @@ export async function GET(req: NextRequest) {
                     hourlyMap[key] = new Set();
                     cursor.setHours(cursor.getHours() + 1);
                 }
+
                 views.forEach((v) => {
                     if (!v.entryTime || !v.visitorId) return;
 
                     const local = toZonedTime(new Date(Number(v.entryTime) * 1000), siteTZ);
                     const date = formatDateInTZ(local, siteTZ);
-                    const hour = local.getHours();
-
-                    hourlyMap[`${date}-${hour}`]?.add(v.visitorId);
+                    hourlyMap[`${date}-${local.getHours()}`]?.add(v.visitorId);
                 });
-               
+
                 hourlyVisitors.forEach((h) => {
                     h.count = hourlyMap[`${h.date}-${h.hour}`]?.size || 0;
                 });
-                 console.log("6.3 \n\n");
             }
+
             // Daily Visitors
 
             const dailyMap: Record<string, Set<string>> = {};
@@ -333,14 +333,13 @@ export async function GET(req: NextRequest) {
             result.push({
                 website: site,
                 analytics: {
-                    last24hVisitors: views.length,
                     hourlyVisitors,
                     totalSessions,
                     totalActiveTime,
                     avgActiveTime,
                     totalVisitors,
                     dailyVisitors,
-                    
+
                     countries: formatCountries(toCountMap(countryVisitors), countryCodeMap),
                     cities: formatCities(toCountMap(cityVisitors), cityCountryMap),
                     regions: formatRegions(toCountMap(regionVisitors), regionCountryMap),

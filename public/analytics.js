@@ -3,11 +3,18 @@
     function generateID(){
         return Date.now().toString(36)+Math.random().toString().substring(2, 9);
     };
-
+     const session_duration = 12*60*60*1000;
     let visitorId = localStorage.getItem('Trackly_Visitor_Id');
-    if(!visitorId){
+    let sessionTime = localStorage.getItem('Trackly_Session_Time');
+    const now = Date.now();              
+    if(!visitorId || (now-sessionTime) >session_duration){
+        if(visitorId){
+            localStorage.removeItem('Trackly_Visitor_Id');
+            localStorage.removeItem('Trackly_Session_Time');
+        }
          visitorId = generateID();
         localStorage.setItem('Trackly_Visitor_Id', visitorId);
+        localStorage.setItem('Trackly_Session_Time', now);
     };
 
     const script = document.currentScript;
@@ -15,7 +22,7 @@
     const domain = script.getAttribute('data-domain');
     
     // Get the Entry point
-    const entryTime = Date.now();
+    const entryTime = Math.floor(Date.now()/1000)
    // Get Refrerr
    const referrer = document?.referrer || 'Direct';
     // UTM sources
@@ -35,20 +42,20 @@
  
 
     // Active Time Tracking
-    let activeStartTime = Date.now();
+    let activeStartTime = Math.floor(Date.now()/1000)
     let totalActiveTime = 0;
     const handleExit = ()=>{
-        const exitTime = Date.now();
-        totalActiveTime += Date.now()-activeStartTime;
+        const exitTime = Math.floor(Date.now()/1000);
+        totalActiveTime += Math.floor(Date.now()/1000)-activeStartTime;
           fetch(`http://localhost:3000/api/track`, {
             keepalive: true,
         method: 'POST',
         headers:{
             'Content-Type':"application/json"
         },
-        body: JSON.stringify({type:"exit", websiteId,domain,exitTime, totalActiveTime, visitorId})
+        body: JSON.stringify({type:"exit", websiteId,domain,exitTime, totalActiveTime, visitorId, exitUrl : window.location.href})
     });
-    localStorage.removeItem('Trackly_Visitor_Id');
+    
     }
 
     // Whenever the User Closes the Window

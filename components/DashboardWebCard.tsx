@@ -37,7 +37,7 @@ const DashboardWebCard = ({ websiteInfo }: Props) => {
 
       <div className="px-5 pb-2 flex items-center justify-between">
         <div>
-          <p className="text-2xl font-semibold text-white">{websiteInfo?.analytics?.last24hVisitors || 0}</p>
+          <p className="text-2xl font-semibold text-white">{websiteInfo?.analytics?.totalVisitors || 0}</p>
           <p className="text-xs text-neutral-500">Last 24h Visitors</p>
         </div>
         {/*

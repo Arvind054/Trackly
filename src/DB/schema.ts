@@ -37,6 +37,7 @@ country: varchar(),
 countryCode: varchar(),
 ipAddress: varchar(),
 refParams: varchar(),
+exitUrl:varchar(),
 });
 
 // User Table
