@@ -34,6 +34,7 @@ browser: varchar(),
 city: varchar(),
 region: varchar(),
 country: varchar(),
+countryCode: varchar(),
 ipAddress: varchar(),
 refParams: varchar(),
 });
