@@ -63,7 +63,7 @@ const DashboardWebCard = ({ websiteInfo }: Props) => {
       </div>
 
       <div className="p-4 pt-3 border-t border-neutral-800">
-        <Link href={`/dashboard/${websiteInfo?.website?.websiteId}`}>
+        <Link href={`/dashboard/website/${websiteInfo?.website?.websiteId}`}>
           <Button 
             variant="ghost" 
             className="w-full h-9 flex items-center justify-center gap-2 text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all duration-200"
