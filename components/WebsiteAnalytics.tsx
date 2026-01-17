@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Card, CardContent } from './ui/card'
 import type { WebsiteInfoType } from '@/lib/types'
 import LabelCount from './LabelCount'
-import { Separator } from './ui/separator'
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
-import {AreaChart, Area, CartesianGrid, XAxis, YAxis } from 'recharts';
+import {AreaChart, Area, XAxis, YAxis } from 'recharts';
 
 type Props = {
   websiteInfo: WebsiteInfoType | null | undefined,
@@ -26,20 +25,39 @@ export default function WebsiteAnalytics({ websiteInfo, loading, analyticsType}:
   const webAnalytics = websiteInfo?.analytics;
 
   return (
-    <div className='mt-7'>
-      <Card>
-        <CardContent className='p-5 flex items-center gap-6'>
-          <LabelCount title={"Visitors"} info={webAnalytics?.totalVisitors} />
-          <Separator orientation='vertical' className='h-12' />
-          <LabelCount title={"Total Page Views"} info={webAnalytics?.totalSessions} />
-          <Separator orientation='vertical' className='h-12' />
-          <LabelCount title={"Total Active Time"} info={Math.floor((webAnalytics?.totalActiveTime || 0) / 60) + " minutes"} />
-          <Separator orientation='vertical' className='h-12' />
-          <LabelCount title={"Avg Active Time"} info={Math.floor((webAnalytics?.totalActiveTime || 0) / 60) + " minutes"} />
-          <Separator orientation='vertical' className='h-12' />
-          <LabelCount title={"Live Users"} info={"5"} />
-        </CardContent>
-        <CardContent className='p-5 mt-5'>
+    <div className='space-y-4'>
+      {/* Stats Cards Grid */}
+      <div className='grid grid-cols-2 md:grid-cols-5 gap-3'>
+        <Card className='bg-neutral-900 border-neutral-800'>
+          <CardContent className='p-4'>
+            <LabelCount title={"Visitors"} info={webAnalytics?.totalVisitors} />
+          </CardContent>
+        </Card>
+        <Card className='bg-neutral-900 border-neutral-800'>
+          <CardContent className='p-4'>
+            <LabelCount title={"Page Views"} info={webAnalytics?.totalSessions} />
+          </CardContent>
+        </Card>
+        <Card className='bg-neutral-900 border-neutral-800'>
+          <CardContent className='p-4'>
+            <LabelCount title={"Total Active"} info={Math.floor((webAnalytics?.totalActiveTime || 0) / 60) + " min"} />
+          </CardContent>
+        </Card>
+        <Card className='bg-neutral-900 border-neutral-800'>
+          <CardContent className='p-4'>
+            <LabelCount title={"Avg Active"} info={Math.floor((webAnalytics?.totalActiveTime || 0) / 60) + " min"} />
+          </CardContent>
+        </Card>
+        <Card className='bg-neutral-900 border-neutral-800'>
+          <CardContent className='p-4'>
+            <LabelCount title={"Live Users"} info={"5"} />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Chart Card */}
+      <Card className='bg-neutral-900 border-neutral-800'>
+        <CardContent className='p-5'>
           <ChartContainer config={chartConfig} className='h-60 w-full'>
             <AreaChart
               accessibilityLayer
@@ -51,7 +69,6 @@ export default function WebsiteAnalytics({ websiteInfo, loading, analyticsType}:
                 bottom:12
               }}
             >
-              <CartesianGrid vertical={false} />
               <XAxis
                 dataKey={analyticsType ==='hourly'?"hourLabel":"date"}
                 tickLine={false}

@@ -36,67 +36,70 @@ export default function ScriptCard({ website }: Props) {
 </script>`;
     };
     return (
-        <div className="container mx-auto py-10 px-4 max-w-3xl">
-            <h1 className="text-3xl font-bold mb-6">{website.domain}</h1>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Install the WebTrack Script</CardTitle>
-                    <CardDescription>
-                        Copy and paste the following script into the &lt;head&gt; section of
-                        your website&apos;s HTML.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="relative">
-                        <pre className="bg-zinc-950 text-zinc-100 p-4 rounded-lg overflow-x-auto text-sm font-mono">
-                            <code>
-                                <span className="text-zinc-400">&lt;</span>
-                                <span className="text-red-400">script</span>
-                                {"\n"}
-                                {"  "}
-                                <span className="text-yellow-300">defer</span>
-                                {"\n"}
-                                {"  "}
-                                <span className="text-yellow-300">data-website-id</span>
-                                <span className="text-zinc-400">=</span>
-                                <span className="text-green-400">&apos;{website.websiteId}&apos;</span>
-                                {"\n"}
-                                {"  "}
-                                <span className="text-yellow-300">data-domain</span>
-                                <span className="text-zinc-400">=</span>
-                                <span className="text-green-400">
-                                    &apos;{typeof window !== "undefined" ? window.location.origin : ""}&apos;
-                                </span>
-                                {"\n"}
-                                {"  "}
-                                <span className="text-yellow-300">src</span>
-                                <span className="text-zinc-400">=</span>
-                                <span className="text-green-400">
-                                    &quot;{typeof window !== "undefined" ? window.location.origin : ""}/analytics.js&quot;
-                                </span>
-                                <span className="text-zinc-400">&gt;</span>
-                                {"\n"}
-                                <span className="text-zinc-400">&lt;/</span>
-                                <span className="text-red-400">script</span>
-                                <span className="text-zinc-400">&gt;</span>
-                            </code>
-                        </pre>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="absolute top-3 right-3 bg-zinc-800 border-zinc-700 hover:bg-zinc-700"
-                            onClick={handleCopy}
-                        >
-                            {copied ? (
-                                <Check className="h-4 w-4 text-green-400" />
-                            ) : (
-                                <Copy className="h-4 w-4 text-zinc-400" />
-                            )}
-                        </Button>
+        <Card className="h-fit bg-neutral-900 border-neutral-800 sticky top-6">
+            <CardHeader className="pb-3">
+                <div className="flex items-center gap-2 mb-1">
+                    <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                        <Copy className="h-4 w-4 text-emerald-500" />
                     </div>
-                </CardContent>
-            </Card>
-        </div>
+                    <CardTitle className="text-base text-neutral-100">Install Script</CardTitle>
+                </div>
+                <CardDescription className="text-xs text-neutral-400 leading-relaxed">
+                    Add this to your website&apos;s &lt;head&gt; section
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+                <div className="relative">
+                    <pre className="bg-neutral-950 border border-neutral-800 text-neutral-100 p-3 rounded-lg overflow-x-auto text-xs font-mono leading-relaxed">
+                        <code>
+                            <span className="text-neutral-500">&lt;</span>
+                            <span className="text-red-400">script</span>
+                            {"\n"}
+                            {" "}
+                            <span className="text-yellow-300">defer</span>
+                            {"\n"}
+                            {" "}
+                            <span className="text-yellow-300">data-website-id</span>
+                            <span className="text-neutral-500">=</span>
+                            <span className="text-emerald-400">&apos;{website.websiteId}&apos;</span>
+                            {"\n"}
+                            {" "}
+                            <span className="text-yellow-300">data-domain</span>
+                            <span className="text-neutral-500">=</span>
+                            <span className="text-emerald-400">
+                                &apos;{typeof window !== "undefined" ? window.location.origin : ""}&apos;
+                            </span>
+                            {"\n"}
+                            {" "}
+                            <span className="text-yellow-300">src</span>
+                            <span className="text-neutral-500">=</span>
+                            <span className="text-emerald-400">
+                                &quot;{typeof window !== "undefined" ? window.location.origin : ""}/analytics.js&quot;
+                            </span>
+                            <span className="text-neutral-500">&gt;</span>
+                            {"\n"}
+                            <span className="text-neutral-500">&lt;/</span>
+                            <span className="text-red-400">script</span>
+                            <span className="text-neutral-500">&gt;</span>
+                        </code>
+                    </pre>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="absolute top-2 right-2 h-7 w-7 bg-neutral-800 border-neutral-700 hover:bg-neutral-700 hover:border-emerald-500/50"
+                        onClick={handleCopy}
+                    >
+                        {copied ? (
+                            <Check className="h-3 w-3 text-emerald-400" />
+                        ) : (
+                            <Copy className="h-3 w-3 text-neutral-400" />
+                        )}
+                    </Button>
+                </div>
+                {copied && (
+                    <p className="text-xs text-emerald-400 mt-2 text-center">Copied to clipboard!</p>
+                )}
+            </CardContent>
+        </Card>
     )
 }

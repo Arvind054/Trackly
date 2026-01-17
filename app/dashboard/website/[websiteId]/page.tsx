@@ -23,11 +23,11 @@ export default function WebsitePage() {
   const [website, setWebsite] = useState<WebsiteType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [websiteInfo,setWebsiteInfo] = useState<WebsiteInfoType|null>();
+  const [websiteInfo, setWebsiteInfo] = useState<WebsiteInfoType | null>();
   const [websiteInfoLoading, setWebsiteInfoLoading] = useState(false);
   const [formData, setFormData] = useState<any>({});
   useEffect(() => {
-  
+
     if (websiteId) {
       fetchWebsite();
       getWebsiteAnalytics();
@@ -36,58 +36,58 @@ export default function WebsitePage() {
 
 
   const fetchWebsite = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/website/${websiteId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch website");
-        }
-        const data = await response.json();
-        setWebsite(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong");
-      } finally {
-        setLoading(false);
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/website/${websiteId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch website");
       }
-    };
-
-    const getWebsiteAnalytics = async()=>{
-      setWebsiteInfoLoading(true);
-      const fromDate = format(formData?.fromDate || new Date(), 'yyyy-MM-dd');
-      const toDate = formData?.toDate ? format(formData?.toDate, 'yyyy-MM-dd'): fromDate;
-      const result = await axios.get(`/api/website?websiteId=${websiteId}&from=${fromDate}&to=${toDate}`);
-      setWebsiteInfo(result?.data[0]);
-      setWebsiteInfoLoading(false);
+      const data = await response.json();
+      setWebsite(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setLoading(false);
     }
- useEffect(()=>{
-   getWebsiteAnalytics();
- }, [formData?.fromDate, formData?.toDate, formData?.analyticsType]);
+  };
+
+  const getWebsiteAnalytics = async () => {
+    setWebsiteInfoLoading(true);
+    const fromDate = format(formData?.fromDate || new Date(), 'yyyy-MM-dd');
+    const toDate = formData?.toDate ? format(formData?.toDate, 'yyyy-MM-dd') : fromDate;
+    const result = await axios.get(`/api/website?websiteId=${websiteId}&from=${fromDate}&to=${toDate}`);
+    setWebsiteInfo(result?.data[0]);
+    setWebsiteInfoLoading(false);
+  }
+  useEffect(() => {
+    getWebsiteAnalytics();
+  }, [formData?.fromDate, formData?.toDate, formData?.analyticsType]);
   if (loading) {
     return (
-      <WebsiteScriptLoader/>
+      <WebsiteScriptLoader />
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto py-10 px-4 max-w-3xl">
-           <Card className="border-destructive">
-             <CardHeader>
-               <CardTitle className="text-destructive">Error</CardTitle>
-               <CardDescription>{error}</CardDescription>
-             </CardHeader>
-           </Card>
-         </div>
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center px-4">
+        <Card className="border-red-500/50 bg-neutral-900 max-w-md w-full">
+          <CardHeader>
+            <CardTitle className="text-red-400">Error</CardTitle>
+            <CardDescription className="text-neutral-400">{error}</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
     );
   }
 
   if (!website) {
     return (
-      <div className="container mx-auto py-10 px-4 max-w-3xl">
-        <Card>
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center px-4">
+        <Card className="bg-neutral-900 border-neutral-800 max-w-md w-full">
           <CardHeader>
-            <CardTitle>Website Not Found</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-neutral-100">Website Not Found</CardTitle>
+            <CardDescription className="text-neutral-400">
               The website you&apos;re looking for doesn&apos;t exist.
             </CardDescription>
           </CardHeader>
@@ -97,12 +97,37 @@ export default function WebsitePage() {
   }
 
   return (
-    <div>
-    <div className="flex items-center">
-      <WebsiteDetailInput setFormData={setFormData} setReloadData={()=>getWebsiteAnalytics}></WebsiteDetailInput>
-     <ScriptCard website={website}/>
-     </div>
-      <WebsiteAnalytics websiteInfo = {websiteInfo} loading = {websiteInfoLoading} analyticsType={formData?.analyticsType}/>
-     </div>
+    <div className="min-h-screen bg-neutral-950 py-8 px-4 md:px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <span className="text-white font-bold text-lg">
+                {website.domain?.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-neutral-100">{website.domain}</h1>
+              <p className="text-neutral-400 text-sm">Website Analytics Dashboard</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+          {/* Analytics Section - Takes 3 columns */}
+          <div className="xl:col-span-3 space-y-6">
+            <WebsiteDetailInput setFormData={setFormData} setReloadData={() => getWebsiteAnalytics} />
+            <WebsiteAnalytics websiteInfo={websiteInfo} loading={websiteInfoLoading} analyticsType={formData?.analyticsType} />
+          </div>
+          
+          {/* Script Section - Compact sidebar */}
+          <div className="xl:col-span-1">
+            <ScriptCard website={website} />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
