@@ -3,7 +3,7 @@ export type WebsiteType = {
     websiteId: string,
     domain:string,
     timeZone: string,
-    enableLocalhostTracking:boolean,
+    enabledLocalhostTracking:boolean,
     userEmail: string,
 };
 
@@ -13,12 +13,18 @@ export type HourlyVisitorsType = {
     hour: number,
     hourLabel: string,
 };
+export type DailyVisitorsType = {
+   date: string,
+   count: number,
+   
+};
 export type AnalyticsType = {
   avgActiveTime: number,
   totalActiveTime:number,
   totalSessions: number,
   totalVisitors: number,
   hourlyVisitors: HourlyVisitorsType[],
+  dailyVisitors: DailyVisitorsType[],
 };
 export type WebsiteInfoType = {
     website:WebsiteType,

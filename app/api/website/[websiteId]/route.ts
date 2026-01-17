@@ -8,10 +8,10 @@ import { headers } from "next/headers";
 // Fetch a single website by ID
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ websiteId: string }> }
 ) {
   try {
-    const { id } = await params;
+    const { websiteId } = await params;
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -29,7 +29,7 @@ export async function GET(
     const [website] = await db
       .select()
       .from(websiteTable)
-      .where(eq(websiteTable.id, parseInt(id)))
+      .where(eq(websiteTable.websiteId, websiteId))
       .limit(1);
     if (!website) {
       return NextResponse.json({ error: "Website not found" }, { status: 404 });
