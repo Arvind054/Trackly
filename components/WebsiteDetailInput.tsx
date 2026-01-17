@@ -45,24 +45,26 @@ export default function WebsiteDetailInput({setFormData, setReloadData}: Props) 
       });
     }, [date, analyticsType])
     return (
-        <div className='flex gap-5'>
+        <div className='flex flex-wrap items-center gap-3 p-4 bg-neutral-900 rounded-xl border border-neutral-800'>
             <div className="flex flex-col gap-3">
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <Button
                             variant="outline"
                             id="date"
-                            className="w-48 justify-between font-normal"
+                            className="w-auto min-w-48 justify-between font-normal bg-neutral-800 border-neutral-700 hover:bg-neutral-700 hover:border-emerald-500/50 text-neutral-200"
                         >
-                            <CalendarSearchIcon/>
-                            {date?.from? (date?.to?(<>{format(date?.from, 'PPP')}-{format(date?.to, 'PPP')}</>):(<>{format(date?.from, 'PPP')}</>)):(<span>Select a Date</span>)}
-                            <ChevronDownIcon />
+                            <CalendarSearchIcon className="h-4 w-4 text-emerald-500"/>
+                            <span className="mx-2">
+                                {date?.from? (date?.to?(<>{format(date?.from, 'MMM d')}-{format(date?.to, 'MMM d')}</>):(<>{format(date?.from, 'MMM d, yyyy')}</>)):(<span className="text-neutral-400">Select a Date</span>)}
+                            </span>
+                            <ChevronDownIcon className="h-4 w-4 text-neutral-400" />
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                        <div className='flex justify-between items-center my-3'>
-                            <Button variant={'outline'} onClick={handleTodayClick}>Today</Button>
-                            <Button variant={'outline'} onClick={handleResetClick}>Reset</Button>
+                    <PopoverContent className="w-auto overflow-hidden p-3 bg-neutral-900 border-neutral-800" align="start">
+                        <div className='flex justify-between items-center gap-2 mb-3'>
+                            <Button variant={'outline'} size="sm" className="bg-neutral-800 border-neutral-700 hover:bg-neutral-700" onClick={handleTodayClick}>Today</Button>
+                            <Button variant={'outline'} size="sm" className="bg-neutral-800 border-neutral-700 hover:bg-neutral-700" onClick={handleResetClick}>Reset</Button>
                         </div>
                         <Calendar
                             mode="range"
@@ -72,16 +74,17 @@ export default function WebsiteDetailInput({setFormData, setReloadData}: Props) 
                                 handleDateChange(date)
                                 setOpen(false)
                             }}
+                            className="rounded-lg bg-neutral-900 text-neutral-100 [&_.rdp-weekday]:text-neutral-400 [&_.rdp-day]:text-neutral-200 [&_.rdp-day_button]:text-neutral-200 [&_.rdp-day_button:hover]:bg-emerald-500/20 [&_.rdp-day_button:hover]:text-white [&_.rdp-caption_label]:text-neutral-200 [&_.rdp-dropdown]:text-neutral-200 [&_.rdp-button_previous]:text-neutral-300 [&_.rdp-button_next]:text-neutral-300 [&_.rdp-button_previous:hover]:bg-neutral-800 [&_.rdp-button_next:hover]:bg-neutral-800 [&_[data-selected=true]_.rdp-day_button]:bg-emerald-500 [&_[data-selected=true]_.rdp-day_button]:text-white [&_.rdp-range_middle_.rdp-day_button]:bg-emerald-500/30 [&_.rdp-today]:bg-neutral-800 [&_.rdp-outside]:text-neutral-600"
                         />
                     </PopoverContent>
                 </Popover>
             </div>
-             <div>
+            <div>
                 <Select value={analyticsType} onValueChange={(value)=>setAnalyticsType(value)}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-[140px] bg-neutral-800 border-neutral-700 hover:border-emerald-500/50 text-neutral-200">
                         <SelectValue placeholder="Hourly" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-neutral-900 border-neutral-800">
                         <SelectGroup>
                             <SelectItem value="hourly">Hourly</SelectItem>
                             <SelectItem value="daily">Daily</SelectItem>
@@ -89,7 +92,14 @@ export default function WebsiteDetailInput({setFormData, setReloadData}: Props) 
                     </SelectContent>
                 </Select>
             </div>
-            <Button onClick={()=>setReloadData(true)}> <RefreshCcw/> </Button>
+            <Button 
+                variant="outline" 
+                size="icon"
+                className="bg-neutral-800 border-neutral-700 hover:bg-neutral-700 hover:border-emerald-500/50"
+                onClick={()=>setReloadData(true)}
+            > 
+                <RefreshCcw className="h-4 w-4 text-emerald-500"/> 
+            </Button>
         </div>
     )
 }
