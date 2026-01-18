@@ -124,8 +124,8 @@ export default function WebsitePage() {
             <WebsiteAnalytics websiteInfo={websiteInfo} loading={websiteInfoLoading} analyticsType={formData?.analyticsType} />
             <div>
             <WebRefCard websiteAnalytics = {websiteInfo?.analytics} loading = {loading}/>
-            <WebGeoCard/>
-            <WebDeviceCard/>
+            <WebGeoCard websiteAnalytics = {websiteInfo?.analytics} loading = {loading}/>
+            <WebDeviceCard websiteAnalytics = {websiteInfo?.analytics} loading = {loading}/>
             </div>
           </div>
           
