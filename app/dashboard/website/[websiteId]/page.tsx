@@ -15,7 +15,9 @@ import { WebsiteInfoType, type WebsiteType } from "@/lib/types";
 import WebsiteAnalytics from "@/components/WebsiteAnalytics";
 import axios from "axios";
 import { format } from "date-fns";
-
+import WebRefCard from '@/components/WebRefCard';
+import WebGeoCard from "@/components/WebGeoCard";
+import WebDeviceCard from "@/components/WebDeviceCard";
 
 export default function WebsitePage() {
   const params = useParams();
@@ -120,6 +122,11 @@ export default function WebsitePage() {
           <div className="xl:col-span-3 space-y-6">
             <WebsiteDetailInput setFormData={setFormData} setReloadData={() => getWebsiteAnalytics} />
             <WebsiteAnalytics websiteInfo={websiteInfo} loading={websiteInfoLoading} analyticsType={formData?.analyticsType} />
+            <div>
+            <WebRefCard websiteAnalytics = {websiteInfo?.analytics} loading = {loading}/>
+            <WebGeoCard/>
+            <WebDeviceCard/>
+            </div>
           </div>
           
           {/* Script Section - Compact sidebar */}
