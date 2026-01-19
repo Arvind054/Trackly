@@ -383,3 +383,25 @@ const getSafeTimeZone = (tz?: string | null) => {
     }
 };
 
+
+// To delete the Website
+
+export async function DELETE(req: NextRequest){
+    const {websiteId} = await req.json();
+     const session = await auth.api.getSession({ headers: await headers() });
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+      const [userData] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, session.user.id))
+      .limit(1);
+    if (!userData || !userData.email) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+   const result = await db.delete(websiteTable).where(and(eq(websiteTable.websiteId, websiteId),eq(websiteTable.userEmail, userData?.email)));
+   return NextResponse.json({message: "Deleted Successfully"});
+} 
+

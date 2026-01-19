@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, CardContent } from './ui/card'
-import type { WebsiteInfoType } from '@/lib/types'
+import type { LiveUserType, WebsiteInfoType } from '@/lib/types'
 import LabelCount from './LabelCount'
 import {
   ChartContainer,
@@ -13,7 +13,8 @@ import {AreaChart, Area, XAxis, YAxis } from 'recharts';
 type Props = {
   websiteInfo: WebsiteInfoType | null | undefined,
   loading: boolean,
-  analyticsType: string
+  analyticsType: string,
+  liveUserCount: any
 }
 const chartConfig = {
   desktop: {
@@ -21,7 +22,7 @@ const chartConfig = {
     color: "var(--chart-1)",
   },
 } satisfies ChartConfig
-export default function WebsiteAnalytics({ websiteInfo, loading, analyticsType}: Props) {
+export default function WebsiteAnalytics({ websiteInfo, loading, analyticsType, liveUserCount}: Props) {
   const webAnalytics = websiteInfo?.analytics;
 
   return (
@@ -50,7 +51,7 @@ export default function WebsiteAnalytics({ websiteInfo, loading, analyticsType}:
         </Card>
         <Card className='bg-neutral-900 border-neutral-800'>
           <CardContent className='p-4'>
-            <LabelCount title={"Live Users"} info={"5"} />
+            <LabelCount title={"Live Users"} info={liveUserCount} />
           </CardContent>
         </Card>
       </div>

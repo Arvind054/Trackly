@@ -11,7 +11,7 @@ import {
 import ScriptCard from "@/components/ScriptCard";
 import WebsiteScriptLoader from "@/components/loaders/WebsiteScriptLoader";
 import WebsiteDetailInput from "@/components/WebsiteDetailInput";
-import { WebsiteInfoType, type WebsiteType } from "@/lib/types";
+import { LiveUserType, WebsiteInfoType, type WebsiteType } from "@/lib/types";
 import WebsiteAnalytics from "@/components/WebsiteAnalytics";
 import axios from "axios";
 import { format } from "date-fns";
@@ -28,6 +28,7 @@ export default function WebsitePage() {
   const [websiteInfo, setWebsiteInfo] = useState<WebsiteInfoType | null>();
   const [websiteInfoLoading, setWebsiteInfoLoading] = useState(false);
   const [formData, setFormData] = useState<any>({});
+  const [liveUsers, setLiveUsers] = useState<LiveUserType[]>([]);
   useEffect(() => {
 
     if (websiteId) {
@@ -60,6 +61,12 @@ export default function WebsitePage() {
     const result = await axios.get(`/api/website?websiteId=${websiteId}&from=${fromDate}&to=${toDate}`);
     setWebsiteInfo(result?.data[0]);
     setWebsiteInfoLoading(false);
+    GetLiveUsers();
+  };
+
+  const GetLiveUsers = async()=>{
+    const result = await axios.get(`/api/live?websiteId=${websiteId}`);
+    setLiveUsers(result.data);
   }
   useEffect(() => {
     getWebsiteAnalytics();
@@ -120,12 +127,12 @@ export default function WebsitePage() {
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           {/* Analytics Section - Takes 3 columns */}
           <div className="xl:col-span-3 space-y-6">
-            <WebsiteDetailInput setFormData={setFormData} setReloadData={() => getWebsiteAnalytics} />
-            <WebsiteAnalytics websiteInfo={websiteInfo} loading={websiteInfoLoading} analyticsType={formData?.analyticsType} />
+            <WebsiteDetailInput setFormData={setFormData} setReloadData={() => getWebsiteAnalytics}  websiteId={websiteId}/>
+            <WebsiteAnalytics websiteInfo={websiteInfo} loading={websiteInfoLoading} analyticsType={formData?.analyticsType} liveUserCount = {liveUsers?.length} />
             <div>
             <WebRefCard websiteAnalytics = {websiteInfo?.analytics} loading = {loading}/>
-            <WebGeoCard/>
-            <WebDeviceCard/>
+            <WebGeoCard websiteAnalytics = {websiteInfo?.analytics} loading = {loading}/>
+            <WebDeviceCard websiteAnalytics = {websiteInfo?.analytics} loading = {loading}/>
             </div>
           </div>
           
