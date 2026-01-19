@@ -62,4 +62,8 @@ export type WebsiteInfoType = {
     analytics: AnalyticsType,
 };
 
+export type LiveUserType = {
+    visitorId : string,
+    websiteId: string,
+}
 export const IMAGE_URL_FOR_DOMAINS = `https://icons.duckduckgo.com/ip3/<domain>.com.ico`

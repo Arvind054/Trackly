@@ -10,7 +10,7 @@ import type { WebsiteType } from '@/lib/types'
 import { Button } from './ui/button';
 import { Check, Copy } from 'lucide-react';
 type Props = {
-    website: WebsiteType
+    website: WebsiteType | null
 }
 
 export default function ScriptCard({ website }: Props) {
@@ -61,7 +61,7 @@ export default function ScriptCard({ website }: Props) {
                             {" "}
                             <span className="text-yellow-300">data-website-id</span>
                             <span className="text-neutral-500">=</span>
-                            <span className="text-emerald-400">&apos;{website.websiteId}&apos;</span>
+                            <span className="text-emerald-400">&apos;{website?.websiteId}&apos;</span>
                             {"\n"}
                             {" "}
                             <span className="text-yellow-300">data-domain</span>

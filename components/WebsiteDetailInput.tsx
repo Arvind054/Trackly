@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "@/components/ui/select";
-import { CalendarSearchIcon, ChevronDownIcon, RefreshCcw } from "lucide-react"
+import { CalendarSearchIcon, ChevronDownIcon, RefreshCcw, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Label } from "@/components/ui/label"
@@ -13,12 +13,14 @@ import {
 } from "@/components/ui/popover"
 import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';
+import Link from 'next/link';
 type Props = {
     setFormData: any,
     setReloadData: any,
+    websiteId: string | undefined | null
 }
 
-export default function WebsiteDetailInput({setFormData, setReloadData}: Props) {
+export default function WebsiteDetailInput({setFormData, setReloadData, websiteId}: Props) {
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<DateRange | undefined>({from:new Date()})
      const [analyticsType, setAnalyticsType] = useState('hourly');
@@ -100,6 +102,7 @@ export default function WebsiteDetailInput({setFormData, setReloadData}: Props) 
             > 
                 <RefreshCcw className="h-4 w-4 text-emerald-500"/> 
             </Button>
+             <Link href={`/dashboard/website/${websiteId}/settings`}><Button><Settings/></Button></Link>
         </div>
     )
 }

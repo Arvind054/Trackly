@@ -1,6 +1,6 @@
 import { db } from "@/src/DB";
 import { websiteTable, user } from "@/src/DB/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -47,3 +47,4 @@ export async function GET(
     );
   }
 }
+
