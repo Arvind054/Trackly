@@ -32,7 +32,7 @@
        const utm_campaign = urlParams.get('utm_campaign')|| '';
        const refParams = window.location.href.split('?')[1] || '';
     const data = {type: "entry",websiteId,domain,entryTime, referrer, url:window.location.href, visitorId, urlParams, utm_source, utm_media, utm_campaign, refParams};
-    fetch(`http://localhost:3000/api/track`, {
+    fetch(`https://trackly-beta.vercel.app/api/track`, {
         method: 'POST',
         headers:{
             'Content-Type':"application/json"
@@ -47,7 +47,7 @@
     const handleExit = ()=>{
         const exitTime = Math.floor(Date.now()/1000);
         totalActiveTime += Math.floor(Date.now()/1000)-activeStartTime;
-          fetch(`http://localhost:3000/api/track`, {
+          fetch(`https://trackly-beta.vercel.app/api/track`, {
             keepalive: true,
         method: 'POST',
         headers:{
@@ -62,7 +62,7 @@
     window.addEventListener('beforeunload',handleExit);
     //Live User Tracking
     const sendLivePing = ()=>{
-        fetch(`http://localhost:3000/api/live`,{
+        fetch(`https://trackly-beta.vercel.app/api/live`,{
             method:"POST",
             headers:{'COntent-type':'application/json'},
             body:JSON.stringify({
