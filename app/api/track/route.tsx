@@ -1,8 +1,28 @@
 import { db } from "@/src/DB";
 import { pageViewsTable } from "@/src/DB/schema";
 import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import {UAParser} from 'ua-parser-js'
+
+const CORS_HEADERS = {
+    'Access-Control-Allow-Origin':'*',
+    'Access-Control-Allow-Methods':'GET,POST,OPTIONS',
+    'Access-Control-Allow-Headers':'Content-Type',
+}
+
+export async function OPTIONS(req:Request){
+    const origin = req.headers.get("origin") || '*';
+    return new NextResponse(null,{
+        status:200,
+        headers:{
+            'Access-Control-Allow-Origin':'origin',
+            'Access-Control-Allow-Methods':'POST, OPTIONS',
+            'Access-Control-Allow-Headers':'Content-Type',
+
+        },
+    });
+}
 export async function POST(req: NextRequest){
     const body = await req.json();
     //Device Info
@@ -50,5 +70,5 @@ export async function POST(req: NextRequest){
             exitUrl:body?.exitUrl,
         }).where(eq(pageViewsTable.visitorId, body?.visitorId)).returning();
     }
-     return NextResponse.json({message:"Data Received", data: result},{status: 200});
+     return NextResponse.json({message:"Data Received", data: result},{headers:CORS_HEADERS});
 }
