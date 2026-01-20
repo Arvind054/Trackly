@@ -31,8 +31,8 @@ export default function RootLayout({
         <script
           defer
           data-website-id='a91cc974-45e6-4cb4-aa3d-0cd81a73b91b'
-          data-domain='http://localhost:3000'
-          src="http://localhost:3000/analytics.js">
+          data-domain='https://trackly-beta.vercel.app/'
+          src="https://trackly-beta.vercel.app/analytics.js">
         </script>
       </head>
       <body
