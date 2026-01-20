@@ -2,10 +2,9 @@ import React from 'react'
 import type { AnalyticsType } from '@/lib/types'
 import { Card, CardContent } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp } from "lucide-react"
+import { BarChart3 } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
-import Image from 'next/image';
 
 type Props = {
     websiteAnalytics: AnalyticsType | undefined,
@@ -25,23 +24,36 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-export default function ({websiteAnalytics, loading}: Props) {
+const NoDataMessage = () => (
+    <div className='h-48 w-full mt-4 flex flex-col items-center justify-center text-neutral-500'>
+        <BarChart3 className='h-10 w-10 mb-2 opacity-50' />
+        <p className='text-sm'>No data available</p>
+    </div>
+);
+
+export default function WebDeviceCard({websiteAnalytics, loading}: Props) {
+  const hasDevices = websiteAnalytics?.devices && websiteAnalytics.devices.length > 0;
+  const hasOS = websiteAnalytics?.os && websiteAnalytics.os.length > 0;
+  const hasBrowsers = websiteAnalytics?.browsers && websiteAnalytics.browsers.length > 0;
+
   return (
      <div>
-               <Card>
+               <Card className='bg-neutral-900 border-neutral-800'>
                    <CardContent className='p-5'>
-                       <Tabs defaultValue="source" className="w-full">
-                           <TabsList>
-                               <TabsTrigger value="devices">Devices</TabsTrigger>
-                               <TabsTrigger value="os">OS</TabsTrigger>
-                               <TabsTrigger value="browsers">Browsers</TabsTrigger>
+                       <Tabs defaultValue="devices" className="w-full">
+                           <TabsList className='bg-neutral-800 border-neutral-700'>
+                               <TabsTrigger value="devices" className='data-[state=active]:bg-neutral-700'>Devices</TabsTrigger>
+                               <TabsTrigger value="os" className='data-[state=active]:bg-neutral-700'>OS</TabsTrigger>
+                               <TabsTrigger value="browsers" className='data-[state=active]:bg-neutral-700'>Browsers</TabsTrigger>
                            </TabsList>
                            <TabsContent value="devices">
-                               <ChartContainer config={chartConfig}>
+                               {!hasDevices ? <NoDataMessage /> : (
+                               <ChartContainer config={chartConfig} className='h-48 w-full mt-4'>
                                    <BarChart
                                        accessibilityLayer
                                        data={websiteAnalytics?.devices}
                                        layout="vertical"
+                                       barSize={20}
                                        margin={{
                                            right: 16,
                                        }}
@@ -78,13 +90,16 @@ export default function ({websiteAnalytics, loading}: Props) {
                                        </Bar>
                                    </BarChart>
                                </ChartContainer>
+                               )}
                            </TabsContent>
                            <TabsContent value="os">
-                                 <ChartContainer config={chartConfig}>
+                                 {!hasOS ? <NoDataMessage /> : (
+                                 <ChartContainer config={chartConfig} className='h-48 w-full mt-4'>
                                    <BarChart
                                        accessibilityLayer
                                        data={websiteAnalytics?.os}
                                        layout="vertical"
+                                       barSize={20}
                                        margin={{
                                            right: 16,
                                        }}
@@ -121,13 +136,16 @@ export default function ({websiteAnalytics, loading}: Props) {
                                        </Bar>
                                    </BarChart>
                                </ChartContainer>
+                               )}
                            </TabsContent>
                            <TabsContent value="browsers">
-                                 <ChartContainer config={chartConfig}>
+                                 {!hasBrowsers ? <NoDataMessage /> : (
+                                 <ChartContainer config={chartConfig} className='h-48 w-full mt-4'>
                                    <BarChart
                                        accessibilityLayer
                                        data={websiteAnalytics?.browsers}
                                        layout="vertical"
+                                       barSize={20}
                                        margin={{
                                            right: 16,
                                        }}
@@ -164,6 +182,7 @@ export default function ({websiteAnalytics, loading}: Props) {
                                        </Bar>
                                    </BarChart>
                                </ChartContainer>
+                               )}
                            </TabsContent>
                        </Tabs>
                    </CardContent>
