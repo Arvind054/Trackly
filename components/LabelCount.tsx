@@ -8,8 +8,8 @@ type Props = {
 export default function LabelCount({ title, info }: Props) {
     return (
         <div>
-            <p className='text-xs text-neutral-400 mb-1'>{title}</p>
-            <p className='font-bold text-xl text-neutral-100'>{info ?? '-'}</p>
+            <p className='text-sm text-neutral-400 mb-1'>{title}</p>
+            <p className='font-bold text-2xl text-neutral-100'>{info ?? '-'}</p>
         </div>
     )
 }
