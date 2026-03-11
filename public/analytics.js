@@ -64,7 +64,7 @@
     const sendLivePing = ()=>{
         fetch(`https://trackly-beta.vercel.app/api/live`,{
             method:"POST",
-            headers:{'COntent-type':'application/json'},
+            headers:{'Content-Type':'application/json'},
             body:JSON.stringify({
                 visitorId,
                 websiteId,
@@ -73,5 +73,6 @@
             })
         })
     }
+    sendLivePing(); // Send initial ping immediately
     setInterval(sendLivePing, 10000);
 })();
