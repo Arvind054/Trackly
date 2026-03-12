@@ -15,12 +15,7 @@ export async function OPTIONS(req: Request) {
     const origin = req.headers.get("origin") || '*';
     return new NextResponse(null, {
         status: 200,
-        headers: {
-            'Access-Control-Allow-Origin': 'origin',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-
-        },
+        headers: CORS_HEADERS,
     });
 }
 

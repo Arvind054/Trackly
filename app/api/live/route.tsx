@@ -14,12 +14,7 @@ export async function OPTIONS(req:Request){
     const origin = req.headers.get("origin") || '*';
     return new NextResponse(null,{
         status:200,
-        headers:{
-            'Access-Control-Allow-Origin':'origin',
-            'Access-Control-Allow-Methods':'POST, OPTIONS',
-            'Access-Control-Allow-Headers':'Content-Type',
-
-        },
+        headers:CORS_HEADERS,
     });
 }
 
@@ -45,7 +40,7 @@ try {
     const geoInfo = await geoRes.json();
 
     // 4) Upsert into liveUser table
-    await db
+     await db
       .insert(liveUserTable)
       .values({
         visitorId,
@@ -76,7 +71,7 @@ try {
           browser: browserInfo,
         },
       });
-
+     
     return NextResponse.json({ status: "ok" },{headers:CORS_HEADERS});
   } catch (err: any) {
     console.error(err);
