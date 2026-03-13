@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { UAParser } from 'ua-parser-js'
-
+import { eventQueue } from "@/queues/eventQueues";
 const CORS_HEADERS = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
@@ -22,7 +22,6 @@ export async function OPTIONS(req: Request) {
 function getClientIP(req: Request) {
 
     const vercelIP = req.headers.get("x-vercel-forwarded-for");
-    console.log(vercelIP)
     if (vercelIP) return vercelIP.split(",")[0].trim();
 
 
@@ -42,9 +41,8 @@ export async function POST(req: NextRequest) {
     const deviceInfo = parser.getDevice()?.model;
     const osInfo = parser.getOS()?.name;
     const browserInfo = parser.getBrowser()?.name;
-    
+
     const ip = getClientIP(req) || "71.71.22.54";
-    console.log(ip)
     let geoInfo = null;
 
     if (ip && !ip.startsWith("10.") && !ip.startsWith("192.168")) {
@@ -52,40 +50,14 @@ export async function POST(req: NextRequest) {
         geoInfo = await geoRes.json();
     }
 
-    //Insert to DB
-    let result;
-    if (body?.type == 'entry') {
-        result = await db.insert(pageViewsTable).values({
-            visitorId: body.visitorId,
-            websiteId: body.websiteId,
-            domain: body.domain,
-            url: body.url || '',
-            type: body.type,
-            referrer: body.referrer,
-            entryTime: body.entryTime,
-            exitTime: body.exitTime,
-            totalActiveTime: body.totalActiveTime,
-            url_params: body.urlParams,
-            utm_source: body.utm_source,
-            utm_medium: body.utm_media,
-            utm_campaign: body.utm_campaign,
-            device: deviceInfo,
-            os: osInfo,
-            browser: browserInfo,
-            city: geoInfo.city,
-            region: geoInfo.region,
-            country: geoInfo.country,
-            countryCode: geoInfo.countryCode,
-            ipAddress: ip || '',
-            refParams: body.refParams,
-        }).returning();
-
-    } else {
-        result = await db.update(pageViewsTable).set({
-            exitTime: body.exitTime,
-            totalActiveTime: body.totalActiveTime,
-            exitUrl: body?.exitUrl,
-        }).where(eq(pageViewsTable.visitorId, body?.visitorId)).returning();
-    }
-    return NextResponse.json({ message: "Data Received", data: result }, { headers: CORS_HEADERS });
+    //Insert to Queue
+    await eventQueue.add("track-event", {
+        ...body,
+        device: deviceInfo,
+        os: osInfo,
+        browser: browserInfo,
+        geoInfo,
+        ip
+    });
+    return NextResponse.json({ message: "Added to Queue"}, { headers: CORS_HEADERS });
 }
