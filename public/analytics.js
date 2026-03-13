@@ -1,5 +1,5 @@
 
-const REQUEST_APP_URL ='https://trackly-beta.vercel.app';
+const REQUEST_APP_URL ='http://localhost:3000/';
 
 (function(){
     function generateID(){
