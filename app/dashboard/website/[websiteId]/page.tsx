@@ -66,7 +66,7 @@ export default function WebsitePage() {
 
   const GetLiveUsers = async()=>{
     const result = await axios.get(`/api/live?websiteId=${websiteId}`);
-    setLiveUsers(result.data);
+    setLiveUsers(result?.data || 0);
   }
   useEffect(()=>{
     const timer = setInterval(()=>{
@@ -134,7 +134,8 @@ export default function WebsitePage() {
           {/* Analytics Section - Takes 3 columns */}
           <div className="xl:col-span-3 space-y-6">
             <WebsiteDetailInput setFormData={setFormData} setReloadData={() => getWebsiteAnalytics}  websiteId={websiteId}/>
-            <WebsiteAnalytics websiteInfo={websiteInfo} loading={websiteInfoLoading} analyticsType={formData?.analyticsType} liveUserCount = {liveUsers?.length} />
+            <WebsiteAnalytics websiteInfo={websiteInfo} loading={websiteInfoLoading} analyticsType={formData?.analyticsType} liveUserCount = {liveUsers} />
+
             <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
               <WebRefCard websiteAnalytics={websiteInfo?.analytics} loading={loading}/>
               <WebGeoCard websiteAnalytics={websiteInfo?.analytics} loading={loading}/>
