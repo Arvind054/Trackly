@@ -40,6 +40,5 @@ export async function GET(req: NextRequest){
   const key = `live:${websiteId}`;
   await redis.zremrangebyscore(key, 0, now - 30000);
   const activeUsers = await redis.zcard(key);
-  console.log("active users are ", activeUsers);
   return NextResponse.json(activeUsers);
 }
